@@ -114,8 +114,8 @@ def get_wallpaper_ids_path():
 
 def download_wallpaper_official(wallpaper_url):
     """Download the wallpaper using the official URL."""
-    response = requests.get(wallpaper_url)
-    if response.headers.get('Content-Type') != 'image/jpeg':
+    response = urllib.request.urlopen(wallpaper_url)
+    if not response.headers.get('Content-Type') in ['image/jpeg', 'application/octet-stream']:
         raise ValueError("Response should contain image, maybe it's 404 page.")
     return url_data.content
 
