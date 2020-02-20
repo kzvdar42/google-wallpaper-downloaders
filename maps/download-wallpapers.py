@@ -20,7 +20,8 @@ limitations under the License.
 import base64
 import json
 import os
-import requests
+import urllib
+import urllib.request
 
 try:
     import tqdm
@@ -116,7 +117,7 @@ def download_wallpaper_official(wallpaper_url):
     response = urllib.request.urlopen(wallpaper_url)
     if not response.headers.get('Content-Type') in ['image/jpeg', 'application/octet-stream']:
         raise ValueError("Response should contain image, maybe it's 404 page.")
-    return url_data.content
+    return response.read()
 
 
 def get_wallpaper_bytes(wallpaper_info):
@@ -128,7 +129,8 @@ def get_wallpaper_bytes(wallpaper_info):
 def download_wallpaper_from_plugin(wallpaper_info_url):
     """Download the wallpaper as the plugin do."""
     try:
-        json_data = requests.get(wallpaper_info_url).json()['dataUri']
+        response = urllib.request.urlopen(wallpaper_info_url)
+        json_data = json.loads(response.read())['dataUri']
     except json.decoder.JSONDecodeError:
         raise ValueError("Response should contain json data, maybe it's 404 page.")
     return get_wallpaper_bytes(json_data)

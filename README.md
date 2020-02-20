@@ -21,13 +21,7 @@ Be wary of download sizes: Chrome OS wallpapers are 200+ MB combined.
 
 ### Maps version
 
-For this version you also can use Python 3.4+, but If you don't have `requests` and `tqdm` packages installed, install them using the next command:
-```
-$ pip install -r requirements.txt
-```
-`tqdm` package is not required, but if you want a progress bar to show the percentage of the downloads, consider installing it.
-
-To run it:
+Just use Python 3.4+, no dependencies required. But, if you want but if you want a progress bar to show the percentage of the downloads, consider installing [`tqdm`][tqdm_link] package.
 ```
 $ python3 maps/download-wallpapers.py
 ```
@@ -46,3 +40,4 @@ Check the version of the [Chrome extention][Maps link], if it's bigger than `3.0
 
 [Chrome OS link]: https://chrome.google.com/webstore/detail/chrome-os-wallpapers/dkfibabkihblcenahmcdmfepojcejoan
 [Maps link]: https://chrome.google.com/webstore/detail/earth-view-from-google-ma/bhloflhklmhfpedakmangadcdofhnnoh
+[tqdm_link]: https://pypi.org/project/tqdm/
