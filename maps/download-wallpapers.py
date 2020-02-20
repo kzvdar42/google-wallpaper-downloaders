@@ -51,14 +51,13 @@ def download_wallpapers():
 
     # Check the list of already downloaded wallpapers.
     downloaded_wallpapers = os.listdir(wallpapers_path)
-    downloaded_wallpapers_ids = map(lambda x: x.rsplit('.', 1)[0],
-                                    downloaded_wallpapers)
-
+    downloaded_wallpapers_ids = list(map(lambda x: x.rsplit('.', 1)[0],
+                                    downloaded_wallpapers))
     # Prompt the user to skip already downloaded wallpapers.
     wallpapers_ids = set(get_wallpaper_ids())
     if not wallpapers_ids.isdisjoint(downloaded_wallpapers_ids):
         if input(PROMPT_2).lower() == 'y':
-            print('Skipping downloaded wallpapers')
+            print('Skipping downloaded wallpapers.')
             wallpapers_ids.difference_update(downloaded_wallpapers_ids)
 
     # Start the download.
