@@ -74,6 +74,7 @@ def download_wallpapers():
         except ValueError:
             write(f"[ERROR] Could not download the wallpaper with id {wallpaper_id}, retrying with other method.")
             try:
+                wallpaper_url = REMOTE_URLS[not prompt1_res].format(wallpaper_id)
                 wallpaper_bytes = REQ_FUNCS[not prompt1_res](wallpaper_url)
             except ValueError:
                 write(f"[ERROR] Still can't download the wallpaper. Skipping it.")
