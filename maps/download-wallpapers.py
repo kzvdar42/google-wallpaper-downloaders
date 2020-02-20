@@ -77,6 +77,7 @@ def download_wallpapers():
                 wallpaper_bytes = REQ_FUNCS[not prompt1_res](wallpaper_url)
             except ValueError:
                 write(f"[ERROR] Still can't download the wallpaper. Skipping it.")
+                continue
 
         wallpaper_path = get_wallpaper_path(wallpapers_path, wallpaper_id)
         save_wallpaper(wallpaper_path, wallpaper_bytes)
