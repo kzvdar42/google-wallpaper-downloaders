@@ -72,12 +72,12 @@ def download_wallpapers():
         try:
             wallpaper_bytes = REQ_FUNCS[prompt1_res](wallpaper_url)
         except ValueError:
-            write(f"[ERROR] Could not download the wallpaper with id {wallpaper_id}, retrying with other method.")
+            write(f"[WARNING] Could not download the wallpaper with id {wallpaper_id}, retrying with other method.")
             try:
                 wallpaper_url = REMOTE_URLS[not prompt1_res].format(wallpaper_id)
                 wallpaper_bytes = REQ_FUNCS[not prompt1_res](wallpaper_url)
             except ValueError:
-                write(f"[ERROR] Still can't download the wallpaper. Skipping it.")
+                write(f"[ERROR] Can't download the wallpaper with id {wallpaper_id} using both methods. Skipping it.")
                 continue
 
         wallpaper_path = get_wallpaper_path(wallpapers_path, wallpaper_id)
@@ -86,7 +86,7 @@ def download_wallpapers():
             pbar.desc = "Wallpaper id: {}".format(wallpaper_id)
             pbar.update(1)
         else:
-            print('Downloaded wallpaper with id: {}'.format(wallpaper_id))
+            print('[OK] Downloaded wallpaper with id: {}'.format(wallpaper_id))
 
 
 def create_directory(dir_path):
