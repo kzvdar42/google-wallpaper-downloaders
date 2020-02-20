@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 '''
 Copyright 2020 Artur Dryomov & Vladislav Kuleykin
@@ -63,10 +63,14 @@ def download_wallpapers():
         wallpaper_url = REMOTE_URL.format(wallpaper_id)
 
         # Download the wallpaper using the chosen URL
-        if prompt1_res:
-            wallpaper_bytes = download_wallpaper_official(wallpaper_url)
-        else:
-            wallpaper_bytes = download_wallpaper_from_plugin(wallpaper_url)
+        try:
+            wallpaper_bytes = REQ_FUNCS[prompt1_res](wallpaper_url)
+        except ValueError:
+            pbar.write(f"[ERROR] Could not download the wallpaper with id {wallpaper_id}, retrying with other method.")
+            try:
+                wallpaper_bytes = REQ_FUNCS[not prompt1_res](wallpaper_url)
+            except ValueError:
+                pbar.write(f"[ERROR] Still can't download the wallpaper. Skipping it.")
 
         wallpaper_path = get_wallpaper_path(wallpapers_path, wallpaper_id)
         save_wallpaper(wallpaper_path, wallpaper_bytes)
@@ -99,7 +103,9 @@ def get_wallpaper_ids_path():
 
 def download_wallpaper_official(wallpaper_url):
     """Download the wallpaper using the official URL."""
-    url_data = requests.get(wallpaper_url)
+    response = requests.get(wallpaper_url)
+    if response.headers.get('Content-Type') != 'image/jpeg':
+        raise ValueError("Response should contain image, maybe it's 404 page.")
     return url_data.content
 
 
@@ -111,7 +117,10 @@ def get_wallpaper_bytes(wallpaper_info):
 
 def download_wallpaper_from_plugin(wallpaper_info_url):
     """Download the wallpaper as the plugin do."""
-    json_data = requests.get(wallpaper_info_url).json()['dataUri']
+    try:
+        json_data = requests.get(wallpaper_info_url).json()['dataUri']
+    except json.decoder.JSONDecodeError:
+        raise ValueError("Response should contain json data, maybe it's 404 page.")
     return get_wallpaper_bytes(json_data)
 
 
@@ -126,6 +135,11 @@ def save_wallpaper(wallpaper_path, wallpaper_bytes):
     with open(wallpaper_path, "wb") as wallpaper_file:
         wallpaper_file.write(wallpaper_bytes)
 
+
+REQ_FUNCS = {
+    0: download_wallpaper_from_plugin,
+    1: download_wallpaper_official,
+}
 
 if __name__ == "__main__":
     download_wallpapers()

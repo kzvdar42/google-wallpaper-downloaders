@@ -9,6 +9,11 @@ Now you can use them locally!
 
 ## Usage
 
+If you don't have `requests` and `tqdm` installed, install them using the next command:
+```
+$ pip install -r requirements.txt
+```
+
 Just use Python 3.4+, no dependencies required. But if you want a progress bar to show the percentage of the downloads, consider installing the [`tqdm`][tqdm link] package.
 
 ```
