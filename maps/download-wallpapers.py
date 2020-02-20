@@ -22,8 +22,13 @@ import json
 import os
 import requests
 
-import tqdm
-
+try:
+    import tqdm
+    use_tqdm = True
+    write = tqdm.write
+except ImportError:
+    use_tqdm = False
+    write = print
 
 REMOTE_URLS = [
     "https://www.gstatic.com/prettyearth/assets/data/v3/{}.json",
@@ -58,7 +63,8 @@ def download_wallpapers():
 
     # Start the download.
     print(":: Downloading Google Maps wallpapers.")
-    pbar = tqdm.tqdm(total=len(wallpapers_ids))
+    if use_tqdm:
+        pbar = tqdm.tqdm(total=len(wallpapers_ids))
     for wallpaper_id in sorted(wallpapers_ids):
         wallpaper_url = REMOTE_URL.format(wallpaper_id)
 
@@ -66,16 +72,19 @@ def download_wallpapers():
         try:
             wallpaper_bytes = REQ_FUNCS[prompt1_res](wallpaper_url)
         except ValueError:
-            pbar.write(f"[ERROR] Could not download the wallpaper with id {wallpaper_id}, retrying with other method.")
+            write(f"[ERROR] Could not download the wallpaper with id {wallpaper_id}, retrying with other method.")
             try:
                 wallpaper_bytes = REQ_FUNCS[not prompt1_res](wallpaper_url)
             except ValueError:
-                pbar.write(f"[ERROR] Still can't download the wallpaper. Skipping it.")
+                write(f"[ERROR] Still can't download the wallpaper. Skipping it.")
 
         wallpaper_path = get_wallpaper_path(wallpapers_path, wallpaper_id)
         save_wallpaper(wallpaper_path, wallpaper_bytes)
-        pbar.desc = "Wallpaper id: {}".format(wallpaper_id)
-        pbar.update(1)
+        if use_tqdm:
+            pbar.desc = "Wallpaper id: {}".format(wallpaper_id)
+            pbar.update(1)
+        else:
+            print('Downloaded wallpaper with id: {}'.format(wallpaper_id))
 
 
 def create_directory(dir_path):
