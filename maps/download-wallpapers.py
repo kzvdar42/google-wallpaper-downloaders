@@ -24,7 +24,7 @@ import urllib
 import urllib.request
 
 try:
-    import tqdm
+    from tqdm import tqdm
     use_tqdm = True
     write = tqdm.write
 except ImportError:
